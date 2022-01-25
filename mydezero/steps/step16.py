@@ -1,4 +1,9 @@
+import os
+import sys
 import numpy as np
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from core import as_array
+from function import square, add
 
 
 class Variable:
@@ -50,12 +55,6 @@ class Variable:
                     add_func(x.creator)
 
 
-def as_array(x):
-    if np.isscalar(x):
-        return np.array(x)
-    return x
-
-
 class Function(object):
     def __call__(self, *inputs) -> int:
         # アスタリスクをつけることで可変長に対応する
@@ -81,3 +80,12 @@ class Function(object):
 
     def backward(self, gys):
         raise NotImplementedError()
+
+
+if __name__ == "__main__":
+    x = Variable(np.array(2.0))
+    a = square(x)
+    y = add(square(a), square(a))
+    y.backward()
+    print(y.data)
+    print(x.grad)
